@@ -1,2 +1,2 @@
-FROM airhacks/payara
+FROM airhacks/tomee
 COPY ./target/calculator.war ${DEPLOYMENT_DIR}
