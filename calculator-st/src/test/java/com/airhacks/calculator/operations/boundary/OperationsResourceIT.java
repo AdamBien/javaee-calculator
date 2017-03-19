@@ -45,6 +45,4 @@ public class OperationsResourceIT {
         int result = jsonResult.getJsonNumber("result").intValue();
         assertThat(result, is(23));
     }
-
-
 }
