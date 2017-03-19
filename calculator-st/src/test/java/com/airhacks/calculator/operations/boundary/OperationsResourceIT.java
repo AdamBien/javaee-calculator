@@ -23,7 +23,7 @@ public class OperationsResourceIT {
 
     private Client client;
     private WebTarget tut;
-    static final String ADDITION_URI = "http://localhost:8080/calculator/resources/operations/addition";
+    static final String ADDITION_URI = "http://localhost:8282/calculator/resources/operations/addition";
 
     @Before
     public void init() {
