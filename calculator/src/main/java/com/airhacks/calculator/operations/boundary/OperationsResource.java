@@ -25,6 +25,4 @@ public class OperationsResource {
                 add("result", result).
                 build();
     }
-
-
 }
