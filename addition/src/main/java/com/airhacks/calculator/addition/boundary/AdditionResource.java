@@ -1,6 +1,7 @@
 
 package com.airhacks.calculator.addition.boundary;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import java.util.concurrent.TimeUnit;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -31,11 +32,15 @@ public class AdditionResource {
         response.setTimeoutHandler(this::handleTimeout);
         int a = input.getJsonNumber("a").intValue();
         int b = input.getJsonNumber("b").intValue();
+        supplyAsync(() -> computeResult(a, b)).thenAccept(response::resume);
+    }
+
+    JsonObject computeResult(int a, int b) {
         int result = addition.add(a, b);
         JsonObject payload = Json.createObjectBuilder().
                 add("result", result).
                 build();
-        response.resume(payload);
+        return payload;
     }
 
     void handleTimeout(AsyncResponse response) {
