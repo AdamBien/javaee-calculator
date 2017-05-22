@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -22,7 +23,8 @@ public class AdditionResource {
 
     @POST
     public void addition(@Suspended AsyncResponse response, JsonObject input) {
-        response.setTimeout(1, TimeUnit.SECONDS);
+        response.setTimeout(500, TimeUnit.MILLISECONDS);
+        response.setTimeoutHandler(this::handleTimeout);
         int a = input.getJsonNumber("a").intValue();
         int b = input.getJsonNumber("b").intValue();
         int result = addition.add(a, b);
@@ -32,4 +34,11 @@ public class AdditionResource {
         response.resume(payload);
     }
 
+    void handleTimeout(AsyncResponse response) {
+        Response info = Response.
+                status(Response.Status.SERVICE_UNAVAILABLE).
+                header("reason", "too lazy").
+                build();
+        response.resume(info);
+    }
 }
