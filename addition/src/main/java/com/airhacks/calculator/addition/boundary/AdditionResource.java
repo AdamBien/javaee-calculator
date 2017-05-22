@@ -1,6 +1,7 @@
 
 package com.airhacks.calculator.addition.boundary;
 
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.json.Json;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -35,8 +37,13 @@ public class AdditionResource {
     public void addition(@Suspended AsyncResponse response, JsonObject input) {
         response.setTimeout(500, TimeUnit.MILLISECONDS);
         response.setTimeoutHandler(this::handleTimeout);
-        int a = input.getJsonNumber("a").intValue();
-        int b = input.getJsonNumber("b").intValue();
+        int a = ofNullable(input.getJsonNumber("a")).
+                map(JsonNumber::intValue).
+                orElseThrow(() -> new LackingParameterException("a"));
+        int b = ofNullable(input.getJsonNumber("b")).
+                map(JsonNumber::intValue).
+                orElseThrow(() -> new LackingParameterException("b"));
+
         supplyAsync(() -> computeResult(a, b), mes).thenAccept(response::resume);
     }
 
