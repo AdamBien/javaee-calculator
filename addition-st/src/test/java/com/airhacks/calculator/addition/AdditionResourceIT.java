@@ -10,6 +10,7 @@ import static javax.ws.rs.client.Entity.json;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
@@ -44,5 +45,19 @@ public class AdditionResourceIT {
         JsonObject jsonResult = response.readEntity(JsonObject.class);
         int result = jsonResult.getJsonNumber("result").intValue();
         assertThat(result, is(23));
+    }
+
+    @Test
+    public void timeoutWith42() {
+        JsonObject input = Json.createObjectBuilder().
+                add("a", 40).
+                add("b", 2).
+                build();
+        Response response = this.tut.
+                request(MediaType.APPLICATION_JSON).
+                post(json(input));
+        assertThat(response.getStatus(), is(503));
+        String reason = response.getHeaderString("reason");
+        assertThat(reason, containsString("lazy"));
     }
 }
