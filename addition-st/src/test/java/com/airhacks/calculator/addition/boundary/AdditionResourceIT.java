@@ -48,6 +48,29 @@ public class AdditionResourceIT {
     }
 
     @Test
+    public void additionWithIncompleteInput() {
+        JsonObject input = Json.createObjectBuilder().
+                add("b", 2).
+                build();
+        Response response = this.tut.
+                request(MediaType.APPLICATION_JSON).
+                post(json(input));
+        assertThat(response.getStatus(), is(400));
+        String cause = response.getHeaderString("cause");
+        assertThat(cause, containsString(" a "));
+
+        input = Json.createObjectBuilder().
+                add("a", 2).
+                build();
+        response = this.tut.
+                request(MediaType.APPLICATION_JSON).
+                post(json(input));
+        assertThat(response.getStatus(), is(400));
+        cause = response.getHeaderString("cause");
+        assertThat(cause, containsString(" b "));
+    }
+
+    @Test
     public void timeoutWith42() {
         JsonObject input = Json.createObjectBuilder().
                 add("a", 40).
