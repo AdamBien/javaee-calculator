@@ -16,6 +16,4 @@ public class Configurator {
         String configuredValue = System.getenv().getOrDefault(fieldName, "0");
         return Long.parseLong(configuredValue);
     }
-
-
 }

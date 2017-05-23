@@ -1,9 +1,11 @@
 
 package com.airhacks.calculator.operations.boundary;
 
+import com.airhacks.calculator.breaker.boundary.CircuitBreaker;
 import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.interceptor.Interceptors;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
@@ -13,7 +15,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Stateless
+@ApplicationScoped
+@Interceptors(CircuitBreaker.class)
 public class OperationService {
 
     private Client client;
