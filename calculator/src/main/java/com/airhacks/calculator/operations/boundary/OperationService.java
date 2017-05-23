@@ -22,13 +22,15 @@ public class OperationService {
     @PostConstruct
     public void init() {
         this.client = ClientBuilder.newClient();
+        this.client.property("http.connection.timeout", 500l);
+        this.client.property("http.receive.timeout", 500l);
         this.tut = this.client.target(ADDITION_URI);
     }
 
     public int add(int a, int b) {
         JsonObject input = Json.createObjectBuilder().
-                add("a", 2).
-                add("b", 21).
+                add("a", a).
+                add("b", b).
                 build();
         Response response = this.tut.
                 request(MediaType.APPLICATION_JSON).
