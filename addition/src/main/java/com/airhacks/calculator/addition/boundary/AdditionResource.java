@@ -43,7 +43,6 @@ public class AdditionResource {
         int b = ofNullable(input.getJsonNumber("b")).
                 map(JsonNumber::intValue).
                 orElseThrow(() -> new LackingParameterException("b"));
-
         supplyAsync(() -> computeResult(a, b), mes).thenAccept(response::resume);
     }
 

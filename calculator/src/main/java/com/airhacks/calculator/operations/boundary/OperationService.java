@@ -22,8 +22,8 @@ public class OperationService {
     @PostConstruct
     public void init() {
         this.client = ClientBuilder.newClient();
-        this.client.property("http.connection.timeout", 500l);
-        this.client.property("http.receive.timeout", 500l);
+        this.client.property("http.connection.timeout", 500L);
+        this.client.property("http.receive.timeout", 500L);
         this.tut = this.client.target(ADDITION_URI);
     }
 

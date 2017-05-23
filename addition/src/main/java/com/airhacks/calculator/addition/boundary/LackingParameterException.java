@@ -18,5 +18,4 @@ public class LackingParameterException extends WebApplicationException {
                 header("cause", "Parameter: " + parameterName + " is lacking").
                 build());
     }
-
 }
