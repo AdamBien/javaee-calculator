@@ -3,6 +3,7 @@ package com.airhacks.calculator.operations.boundary;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.client.Client;
@@ -19,11 +20,16 @@ public class OperationService {
     private WebTarget tut;
     static final String ADDITION_URI = "http://addition:8080/addition/resources/addition/";
 
+    @Inject
+    private long readTimeout;
+    @Inject
+    private long connectionTimeout;
+
     @PostConstruct
     public void init() {
         this.client = ClientBuilder.newClient();
-        this.client.property("http.connection.timeout", 500L);
-        this.client.property("http.receive.timeout", 500L);
+        this.client.property("http.connection.timeout", this.connectionTimeout);
+        this.client.property("http.receive.timeout", this.readTimeout);
         this.tut = this.client.target(ADDITION_URI);
     }
 
