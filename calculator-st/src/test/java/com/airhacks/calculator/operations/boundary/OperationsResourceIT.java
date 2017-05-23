@@ -45,4 +45,19 @@ public class OperationsResourceIT {
         int result = jsonResult.getJsonNumber("result").intValue();
         assertThat(result, is(23));
     }
+
+    @Test
+    public void slowAddition() {
+        JsonObject input = Json.createObjectBuilder().
+                add("a", 2).
+                add("b", 40).
+                build();
+        Response response = this.tut.
+                request(MediaType.APPLICATION_JSON).
+                post(json(input));
+        assertThat(response.getStatus(), is(200));
+        JsonObject jsonResult = response.readEntity(JsonObject.class);
+        int result = jsonResult.getJsonNumber("result").intValue();
+        assertThat(result, is(23));
+    }
 }
