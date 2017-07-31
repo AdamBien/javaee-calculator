@@ -5,6 +5,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
+import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response;
  *
  * @author airhacks.com
  */
+@Stateless
 @Path("addition")
 public class AdditionResource {
 
