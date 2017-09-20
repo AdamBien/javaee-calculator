@@ -23,7 +23,7 @@ public class OperationsResourceIT {
 
     private Client client;
     private WebTarget tut;
-    static final String ADDITION_URI = "http://localhost:8282/calculator/resources/operations/addition";
+    static final String ADDITION_URI = "http://localhost:8282/calculator/resources/operations/";
 
     @Before
     public void init() {
@@ -37,7 +37,7 @@ public class OperationsResourceIT {
                 add("a", 2).
                 add("b", 21).
                 build();
-        Response response = this.tut.
+        Response response = this.tut.path("addition").
                 request(MediaType.APPLICATION_JSON).
                 post(json(input));
         assertThat(response.getStatus(), is(200));
@@ -52,12 +52,56 @@ public class OperationsResourceIT {
                 add("a", 2).
                 add("b", 40).
                 build();
-        Response response = this.tut.
+        Response response = this.tut.path("addition").
                 request(MediaType.APPLICATION_JSON).
                 post(json(input));
         assertThat(response.getStatus(), is(200));
         JsonObject jsonResult = response.readEntity(JsonObject.class);
         int result = jsonResult.getJsonNumber("result").intValue();
         assertThat(result, is(23));
+    }
+
+    @Test
+    public void multiplication() {
+        JsonObject input = Json.createObjectBuilder().
+                add("a", 2).
+                add("b", 21).
+                build();
+        Response response = this.tut.path("multiplication").
+                request(MediaType.APPLICATION_JSON).
+                post(json(input));
+        assertThat(response.getStatus(), is(200));
+        JsonObject jsonResult = response.readEntity(JsonObject.class);
+        int result = jsonResult.getJsonNumber("result").intValue();
+        assertThat(result, is(42));
+    }
+
+    @Test
+    public void division() {
+        JsonObject input = Json.createObjectBuilder().
+                add("a", 22).
+                add("b", 2).
+                build();
+        Response response = this.tut.path("division").
+                request(MediaType.APPLICATION_JSON).
+                post(json(input));
+        assertThat(response.getStatus(), is(200));
+        JsonObject jsonResult = response.readEntity(JsonObject.class);
+        int result = jsonResult.getJsonNumber("result").intValue();
+        assertThat(result, is(11));
+    }
+    @Test
+    public void subtraction() {
+        JsonObject input = Json.createObjectBuilder().
+                add("a", 22).
+                add("b", 2).
+                build();
+        Response response = this.tut.path("subtraction").
+                request(MediaType.APPLICATION_JSON).
+                post(json(input));
+        assertThat(response.getStatus(), is(200));
+        JsonObject jsonResult = response.readEntity(JsonObject.class);
+        int result = jsonResult.getJsonNumber("result").intValue();
+        assertThat(result, is(19));
     }
 }
