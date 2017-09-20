@@ -46,6 +46,8 @@ public class OperationsResourceIT {
         assertThat(result, is(23));
     }
 
+
+
     @Test
     public void slowAddition() {
         JsonObject input = Json.createObjectBuilder().
@@ -74,6 +76,18 @@ public class OperationsResourceIT {
         JsonObject jsonResult = response.readEntity(JsonObject.class);
         int result = jsonResult.getJsonNumber("result").intValue();
         assertThat(result, is(42));
+    }
+
+    @Test
+    public void multiplicationWithOverflow() {
+        JsonObject input = Json.createObjectBuilder().
+                add("a", Integer.MAX_VALUE).
+                add("b", Integer.MAX_VALUE).
+                build();
+        Response response = this.tut.path("multiplication").
+                request(MediaType.APPLICATION_JSON).
+                post(json(input));
+        assertThat(response.getStatus(), is(400));
     }
 
     @Test

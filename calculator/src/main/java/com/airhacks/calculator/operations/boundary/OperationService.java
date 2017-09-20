@@ -13,13 +13,16 @@ import javax.json.JsonObject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+
+import static java.lang.Math.multiplyExact;
+import static java.lang.Math.subtractExact;
 import static javax.ws.rs.client.Entity.json;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @ApplicationScoped
-@Interceptors({PerformanceSensor.class,CircuitBreaker.class})
+@Interceptors(PerformanceSensor.class)
 public class OperationService {
 
     private Client client;
@@ -39,6 +42,7 @@ public class OperationService {
         this.tut = this.client.target(ADDITION_URI);
     }
 
+    @Interceptors(CircuitBreaker.class)
     public int add(int a, int b) {
         JsonObject input = Json.createObjectBuilder().
                 add("a", a).
@@ -60,10 +64,18 @@ public class OperationService {
     }
 
     public int multiply(int a,int b){
-        return a*b;
+        try {
+            return multiplyExact(a,b);
+        } catch (ArithmeticException e) {
+            throw new ArithmeticWebException(e.getMessage());
+        }
     }
 
     public int substract(int a,int b){
-        return a-b;
+        try {
+            return subtractExact(a,b);
+        } catch (ArithmeticException e) {
+            throw new ArithmeticWebException(e.getMessage());
+        }
     }
 }
