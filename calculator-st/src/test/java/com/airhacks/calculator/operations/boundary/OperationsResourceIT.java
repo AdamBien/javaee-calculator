@@ -102,6 +102,6 @@ public class OperationsResourceIT {
         assertThat(response.getStatus(), is(200));
         JsonObject jsonResult = response.readEntity(JsonObject.class);
         int result = jsonResult.getJsonNumber("result").intValue();
-        assertThat(result, is(19));
+        assertThat(result, is(20));
     }
 }
