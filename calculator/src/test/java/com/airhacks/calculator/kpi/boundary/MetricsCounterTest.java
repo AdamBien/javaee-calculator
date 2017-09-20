@@ -1,6 +1,5 @@
 package com.airhacks.calculator.kpi.boundary;
 
-import com.sun.org.apache.bcel.internal.classfile.PMGClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,15 +13,16 @@ public class MetricsCounterTest {
     @Before
     public void init() {
         this.cut = new MetricsCounter();
+        this.cut.init();
     }
 
     @Test
     public void calculateMetrics() {
         this.cut.lastSuccess = 10;
-        this.cut.SUCCESS.set(40);
+        this.cut.success.set(40);
         this.cut.calculateMetrics();
         assertThat(this.cut.successesPerSecond,is(3d));
-        assertThat(this.cut.lastSuccess,is(this.cut.SUCCESS.longValue()));
+        assertThat(this.cut.lastSuccess,is(this.cut.success.longValue()));
     }
 
 }
