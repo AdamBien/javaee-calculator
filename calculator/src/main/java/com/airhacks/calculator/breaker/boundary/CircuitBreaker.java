@@ -2,11 +2,12 @@
 package com.airhacks.calculator.breaker.boundary;
 
 import com.airhacks.calculator.breaker.entity.SubsequentInvocationsFailure;
-import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -14,7 +15,8 @@ import javax.interceptor.InvocationContext;
  */
 public class CircuitBreaker {
 
-    private AtomicInteger COUNTER = new AtomicInteger();
+    @Inject
+    private CircuitBreakersAdmin admin;
 
     @Inject
     long maxExceptionsThreashold;
@@ -24,8 +26,10 @@ public class CircuitBreaker {
 
     @AroundInvoke
     public Object guard(InvocationContext context) throws Exception {
+        Object target = context.getTarget();
+        AtomicInteger counter = admin.getCounter(target);
         try {
-            int failureCount = COUNTER.get();
+            int failureCount = counter.get();
             if (failureCount >= this.maxExceptionsThreashold) {
                 String methodName = context.getMethod().toString();
                 this.unstableServiceEvent.fire(new SubsequentInvocationsFailure(methodName, failureCount));
@@ -33,7 +37,7 @@ public class CircuitBreaker {
             }
             return context.proceed();
         } catch (Exception ex) {
-            COUNTER.incrementAndGet();
+            counter.incrementAndGet();
             throw ex;
         }
     }
