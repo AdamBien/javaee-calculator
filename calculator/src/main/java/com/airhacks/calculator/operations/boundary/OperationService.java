@@ -2,6 +2,7 @@
 package com.airhacks.calculator.operations.boundary;
 
 import com.airhacks.calculator.breaker.boundary.CircuitBreaker;
+import com.airhacks.calculator.kpi.boundary.MetricsCounter;
 import com.airhacks.interceptor.monitoring.boundary.PerformanceSensor;
 
 import javax.annotation.PostConstruct;
@@ -34,6 +35,9 @@ public class OperationService {
     @Inject
     private long connectionTimeout;
 
+    @Inject
+    MetricsCounter counter;
+
     @PostConstruct
     public void init() {
         this.client = ClientBuilder.newClient();
@@ -52,30 +56,44 @@ public class OperationService {
                 request(MediaType.APPLICATION_JSON).
                 post(json(input));
         JsonObject jsonResult = response.readEntity(JsonObject.class);
+        this.counter.success();
         return jsonResult.getJsonNumber("result").intValue();
     }
 
     public double divide(int a,int b){
         try {
-            return a / b;
+            return verifyResult(a / b);
         }catch(ArithmeticException ex){
+            this.counter.overflow();
             throw new ArithmeticWebException(ex.getMessage());
         }
     }
 
     public int multiply(int a,int b){
         try {
-            return multiplyExact(a,b);
+            return verifyResult(multiplyExact(a,b));
         } catch (ArithmeticException e) {
+            this.counter.overflow();
             throw new ArithmeticWebException(e.getMessage());
         }
     }
 
     public int substract(int a,int b){
         try {
-            return subtractExact(a,b);
+            return verifyResult(subtractExact(a,b));
         } catch (ArithmeticException e) {
+            this.counter.overflow();
             throw new ArithmeticWebException(e.getMessage());
         }
     }
+
+     <T extends Number> T verifyResult(T number){
+        if(number.intValue() == 42){
+            this.counter.fortyTwo();
+        }
+        this.counter.success();
+        return number;
+    }
+
+
 }
