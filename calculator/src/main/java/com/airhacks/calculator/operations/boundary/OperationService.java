@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.interceptor.Interceptors;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import static javax.ws.rs.client.Entity.json;
@@ -51,7 +52,11 @@ public class OperationService {
     }
 
     public double divide(int a,int b){
-        return a / b;
+        try {
+            return a / b;
+        }catch(ArithmeticException ex){
+            throw new ArithmeticWebException(ex.getMessage());
+        }
     }
 
     public int multiply(int a,int b){
