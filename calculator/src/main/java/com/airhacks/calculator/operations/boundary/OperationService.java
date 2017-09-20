@@ -2,6 +2,8 @@
 package com.airhacks.calculator.operations.boundary;
 
 import com.airhacks.calculator.breaker.boundary.CircuitBreaker;
+import com.airhacks.interceptor.monitoring.boundary.PerformanceSensor;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -16,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @ApplicationScoped
-@Interceptors(CircuitBreaker.class)
+@Interceptors({PerformanceSensor.class,CircuitBreaker.class})
 public class OperationService {
 
     private Client client;
@@ -46,5 +48,17 @@ public class OperationService {
                 post(json(input));
         JsonObject jsonResult = response.readEntity(JsonObject.class);
         return jsonResult.getJsonNumber("result").intValue();
+    }
+
+    public double divide(int a,int b){
+        return a / b;
+    }
+
+    public int multiply(int a,int b){
+        return a*b;
+    }
+
+    public int substract(int a,int b){
+        return a-b;
     }
 }
